@@ -4,6 +4,9 @@ language:
 os:
   - linux
 
+sudo:
+  - true
+
 addons:
   apt:
     packages:
@@ -12,7 +15,7 @@ addons:
       - python3-pip
 
 install:
-  - pip3 install pyacoustid pytaglib
+  - sudo pip3 install pyacoustid pytaglib
 
 script:
   - mkdir -p build
