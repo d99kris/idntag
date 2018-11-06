@@ -10,14 +10,8 @@ matrix:
       dist: bionic
       sudo: required
 
-addons:
-  apt:
-    packages:
-      - cmake
-      - ffmpeg
-      - libtag1-dev
-
 install:
+  - sudo apt install cmake ffmpeg libtag1-dev
   - pip3 install pyacoustid pytaglib
 
 script:
