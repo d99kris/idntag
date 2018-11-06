@@ -11,7 +11,8 @@ matrix:
       sudo: required
 
 install:
-  - sudo apt install cmake ffmpeg libtag1-dev
+  - sudo apt update
+  - sudo apt install -y cmake ffmpeg libtag1-dev
   - pip3 install pyacoustid pytaglib
 
 script:
