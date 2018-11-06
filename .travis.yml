@@ -1,14 +1,22 @@
 language:
-  - c
+  - python
 
+python:
+  - "3.6"
+    
 matrix:
   include:
     - os: linux
       dist: bionic
       sudo: required
 
+addons:
+  apt:
+    packages:
+      - cmake
+      - ffmpeg
+
 install:
-  - sudo apt install cmake ffmpeg python3-pip
   - pip3 install pyacoustid pytaglib
 
 script:
