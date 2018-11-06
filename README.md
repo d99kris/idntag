@@ -54,10 +54,6 @@ Options:
     -k, --keepname  keep original filename
     -v, --version   show program's version number and exit
 
-Alternatives
-============
-There are many GUI applications enabling similar functionality, but not many command-line based.
-
 License
 =======
 Idntag is distributed under the MIT license. See LICENSE file.
