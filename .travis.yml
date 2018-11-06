@@ -13,6 +13,7 @@ addons:
       - cmake
       - libav-tools
       - python3-pip
+      - libtag1-dev
 
 install:
   - sudo pip3 install pyacoustid pytaglib
