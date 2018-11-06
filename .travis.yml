@@ -15,6 +15,7 @@ addons:
     packages:
       - cmake
       - ffmpeg
+      - libtag1-dev
 
 install:
   - pip3 install pyacoustid pytaglib
