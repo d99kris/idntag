@@ -19,7 +19,7 @@ addons:
       - libtag1-dev
 
 install:
-  - sudo pip3 install pyacoustid pytaglib
+  - pip3 install pyacoustid pytaglib
 
 script:
   - mkdir -p build
