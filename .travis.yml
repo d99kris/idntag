@@ -14,7 +14,7 @@ addons:
   apt:
     packages:
       - cmake
-      - libav-tools
+      - mp3info
       - python3-pip
       - libtag1-dev
       - libchromaprint-dev
