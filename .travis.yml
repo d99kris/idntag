@@ -1,0 +1,22 @@
+language:
+  - c
+
+os:
+  - linux
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - ffmpeg
+      - python3-pip
+
+install:
+  - pip3 install pyacoustid pytaglib
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make
+  - ctest --output-on-failure

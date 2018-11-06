@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Environment
+BUILDDIR="$(pwd)"
+TMPDIR=$(mktemp -d)
+pushd ${TMPDIR} > /dev/null
+
+# Update tag and filename
+RV="0"
+cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/song.mp3
+${BUILDDIR}/idntag song.mp3
+
+# Test filename
+FILELIST=$(ls -1)
+EXPECTED="Broke_For_Free-Night_Owl.mp3"
+if [[ "${FILELIST}" != "${EXPECTED}" ]]; then
+  echo "\"${FILELIST}\" != \"${EXPECTED}\""
+  RV="1"
+fi
+
+# Test artist tag
+ARTIST=$(ffprobe *.mp3 2>&1 | grep artist | head -1 | cut -d':' -f2 | awk '{$1=$1};1')
+EXPECTED="Broke For Free"
+if [[ "${ARTIST}" != "${EXPECTED}" ]]; then
+  echo "\"${ARTIST}\" != \"${EXPECTED}\""
+  RV="1"
+fi
+
+# Test title tag
+TITLE=$(ffprobe *.mp3 2>&1 | grep title | head -1 | cut -d':' -f2 | awk '{$1=$1};1')
+EXPECTED="Night Owl"
+if [[ "${TITLE}" != "${EXPECTED}" ]]; then
+  echo "\"${TITLE}\" != \"${EXPECTED}\""
+  RV="1"
+fi
+
+# Cleanup
+popd > /dev/null
+rm -rf ${TMPDIR}
+exit ${RV}
