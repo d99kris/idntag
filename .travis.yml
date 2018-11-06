@@ -1,11 +1,11 @@
 language:
   - c
 
-matrix:
-  include:
-    - os: linux
-      dist: bionic
-      sudo: required
+os:
+  - linux
+
+sudo:
+  - true
 
 before_install:
   - sudo apt-get install python3 python3-pip cmake ffmpeg libtag1-dev
