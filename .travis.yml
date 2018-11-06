@@ -17,6 +17,7 @@ addons:
       - libav-tools
       - python3-pip
       - libtag1-dev
+      - libchromaprint-dev
 
 install:
   - pip3 install pyacoustid pytaglib
