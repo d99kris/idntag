@@ -4,11 +4,12 @@ language:
 os:
   - linux
 
-sudo:
-  - true
-
-before_install:
-  - sudo apt-get install python3 python3-pip cmake ffmpeg libtag1-dev
+addons:
+  apt:
+    packages:
+      - cmake
+      - libav-tools
+      - python3-pip
 
 install:
   - pip3 install pyacoustid pytaglib
