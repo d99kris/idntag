@@ -18,6 +18,7 @@ addons:
       - python3-pip
       - libtag1-dev
       - libchromaprint-dev
+      - ubuntu-restricted-extras
 
 install:
   - pip3 install pyacoustid pytaglib
