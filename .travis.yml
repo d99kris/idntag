@@ -1,9 +1,11 @@
 language:
-  - generic
+  - python
  
+python:
+  - "3.6"
+
 os:
   - linux
-  - osx
 
 sudo:
   - true
