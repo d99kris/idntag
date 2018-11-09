@@ -1,9 +1,6 @@
 language:
-  - python
+  - generic
  
-python:
-  - "3.5"
-
 os:
   - linux
   - osx
