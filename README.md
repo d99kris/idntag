@@ -9,6 +9,11 @@ Idntag is a command-line tool that identifies artist and song name in
 specified audio files and updates their ID3-tag meta-data with correct data, 
 and renames the files on format Artist_Name-Track_Name.
 
+*Warning:* This tool modifies and renames its input files. The quality of song
+identification is not perfect and may have some false detections. It is 
+therefore recommended to first make a copy of the files to be identified, so
+there is a backup in case the results are not good.
+
 Example Usage
 =============
 
@@ -40,7 +45,7 @@ Generate Makefile and build:
 
 Optionally run tests:
 
-    ctest
+    ctest --output-on-failure
 
 Optionally install in system:
 
