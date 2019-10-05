@@ -28,9 +28,7 @@ Installation
 ============
 Pre-requisites (Ubuntu):
 
-    sudo apt install python3-pip
-    pip3 install pyacoustid
-    pip3 install pytaglib
+    sudo apt install python3-taglib python3-acoustid libtag1-dev
 
 Download the source code:
 
@@ -39,6 +37,10 @@ Download the source code:
 Generate Makefile and build:
 
     mkdir -p build && cd build && cmake .. && make -s
+
+Optionally run tests:
+
+    ctest
 
 Optionally install in system:
 
