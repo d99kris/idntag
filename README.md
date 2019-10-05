@@ -5,15 +5,15 @@ Idntag
 |-----------|
 | [![Build status](https://travis-ci.org/d99kris/idntag.svg?branch=master)](https://travis-ci.org/d99kris/idntag) |
 
-Idntag is a command-line tool that identifies artist and song name in specified audio files and
-updates their ID3-tag meta-data with correct data, and renames the files on format
-Artist_Name-Track_Name.
+Idntag is a command-line tool that identifies artist and song name in 
+specified audio files and updates their ID3-tag meta-data with correct data, 
+and renames the files on format Artist_Name-Track_Name.
 
 Example Usage
 =============
 
-    $ idntag ./tests/song.mp3
-    ./tests/song.mp3: OK
+    $ idntag tests/song.mp3 
+    tests/song.mp3 : OK : tests/Broke_For_Free-Night_Owl.mp3
     $ ls tests/
     Broke_For_Free-Night_Owl.mp3
     $ ffprobe tests/Broke_For_Free-Night_Owl.mp3 2>&1 | grep -e artist -e title

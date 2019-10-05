@@ -28,4 +28,6 @@ endmacro (add_unit_test)
 # Tests
 add_unit_test(test001)
 add_unit_test(test002)
+add_unit_test(test003)
+add_unit_test(test004)
 

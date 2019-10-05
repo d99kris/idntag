@@ -20,30 +20,30 @@ def rate_limit(min_interval):
         sleep_duration = min_interval - (time.time() - rate_limit.last_timestamp)
     except AttributeError:
         sleep_duration = 0
-        
+
     if sleep_duration > 0:
         time.sleep(sleep_duration)
 
     rate_limit.last_timestamp = time.time()
 
-    
+
 def cleanstr(str):
     return re.sub(r'\W+', '', str.replace(" ", "_"))
 
 
 def identify_and_update_file(path, keep_name):
     rate_limit(1.0/3.0)
-    print(path + ": ", end='')
+    print(path + " : ", end='')
     try:
         results = acoustid.match(base64.b64decode(b'Ym5jenB4cmtoOA=='), path)
     except acoustid.NoBackendError:
-        print("FAIL (backend library not found)")
+        print("FAIL : backend library not found")
         return False
     except acoustid.FingerprintGenerationError:
-        print("FAIL (fingerprint generation error)")
+        print("FAIL : fingerprint generation error")
         return False
     except acoustid.WebServiceError as exc:
-        print("FAIL (web service error: " + exc.message + ")")
+        print("FAIL : web service error (" + exc.message + ")")
         return False
 
     for score, rid, title, artist in results:
@@ -52,6 +52,7 @@ def identify_and_update_file(path, keep_name):
         song.tags["TITLE"] = [title]
         song.save()
 
+        newpath = path
         if not keep_name:
             olddir, oldfile = os.path.split(path)
             oldfile, oldext = os.path.splitext(path)
@@ -59,13 +60,13 @@ def identify_and_update_file(path, keep_name):
             # XXX: todo check if file exists before overwriting?
             os.rename(path, newpath)
 
-        print("OK")
+        print("OK : " + newpath)
         return True
 
-    print("FAIL (no matches found)")
+    print("FAIL : no matches found")
     return False
-    
-    
+
+
 def main():
     parser = argparse.ArgumentParser(prog="idntag", description=
                                      "Identify artist and song name from specified "
@@ -73,7 +74,7 @@ def main():
                                      "with correct data, and rename the files on format "
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s 1.01')
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s 1.02')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 

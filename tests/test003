@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Environment
+BUILDDIR="$(pwd)"
+TMPDIR=$(mktemp -d)
+pushd ${TMPDIR} > /dev/null
+
+# Update tag and keep filename
+RV="0"
+cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/song.mp3
+${BUILDDIR}/idntag -k song.mp3 > ${TMPDIR}/out.txt 2> ${TMPDIR}/err.txt
+
+# Test result
+RESULT="$(cat ${TMPDIR}/out.txt | awk -F ' : ' '{ print $2 }')"
+EXPECTED="OK"
+if [[ "${RESULT}" != "${EXPECTED}" ]]; then
+  echo "\"${RESULT}\" != \"${EXPECTED}\""
+  RV="1"
+fi
+
+# Test resulting filename
+FILEPATH="$(cat ${TMPDIR}/out.txt | awk -F ' : ' '{ print $3 }')"
+EXPECTED="${TMPDIR}/song.mp3"
+if [[ "${FILEPATH}" != "${EXPECTED}" ]]; then
+  echo "\"${FILEPATH}\" != \"${EXPECTED}\""
+  RV="1"
+fi
+
+# Cleanup
+popd > /dev/null
+rm -rf ${TMPDIR}
+exit ${RV}
