@@ -33,7 +33,8 @@ Installation
 ============
 Pre-requisites (Ubuntu):
 
-    sudo apt install python3-taglib python3-acoustid libtag1-dev
+    sudo apt install cmake mp3info python3-pip libtag1-dev libchromaprint-dev ubuntu-restricted-extras libav-tools
+    pip3 install pyacoustid pytaglib
 
 Download the source code:
 
