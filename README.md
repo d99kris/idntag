@@ -31,9 +31,16 @@ Idntag is primarily developed and tested on Linux.
 
 Installation
 ============
-Pre-requisites (Ubuntu):
+Pre-requisites Ubuntu:
 
-    sudo apt install cmake mp3info python3-pip libtag1-dev libchromaprint-dev ubuntu-restricted-extras libav-tools
+    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev ubuntu-restricted-extras libav-tools
+
+Pre-requisites Debian (incl. Debian-based like Raspbian):
+
+    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev ffmpeg
+
+Pre-requisites Python:
+
     pip3 install pyacoustid pytaglib
 
 Download the source code:
