@@ -3,7 +3,7 @@ Idntag
 
 | **Linux** |
 |-----------|
-| [![Build status](https://travis-ci.com/d99kris/idntag.svg?branch=master)](https://travis-ci.com/d99kris/idntag) |
+| [![Linux](https://github.com/d99kris/idntag/workflows/Linux/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3ALinux) |
 
 Idntag is a command-line tool that identifies artist and song name in 
 specified audio files and updates their ID3-tag meta-data with correct data, 
