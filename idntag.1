@@ -9,7 +9,7 @@ usage: idntag [\-h] [\-V] [\-v] [\-\-datetime\-fmt DATETIME_FMT] [\-\-log\-fmt L
 [\-\-log\-file\-level {debug,info,warning,error,critical}]
 [\-\-log\-file LOG_FILE] [\-\-color] [\-\-no\-color] [\-\-unicode]
 [\-\-no\-unicode] [\-\-interactive] [\-\-config\-file CONFIG_FILE] [\-k]
-[\-m MATCH] [\-s SEP]
+[\-\-no\-match\-prefix NO_MATCH_PREFIX] [\-m MATCH] [\-s SEP]
 path [path ...]
 .PP
 Identify artist and song name from specified audio files and update their
@@ -65,6 +65,10 @@ The location for the configuration file
 .TP
 \fB\-k\fR, \fB\-\-keepname\fR
 keep original filename
+.TP
+\fB\-\-no\-match\-prefix\fR NO_MATCH_PREFIX
+When set, non\-matching files will be renamed with this
+prefix
 .TP
 \fB\-m\fR MATCH, \fB\-\-match\fR MATCH
 regex to match files against
