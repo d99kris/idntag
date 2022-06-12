@@ -96,7 +96,7 @@ def identify_and_update_file(path):
 
 
 @cli.argument('path', nargs='+', help='path of a file or directory')
-@cli.argument("-s", "--sep", default='-', help="seperator to go between artist and title (Default: -)")
+@cli.argument("-s", "--sep", default='-', help="separator to go between artist and title (Default: -)")
 @cli.argument("-m", "--match", help="regex to match files against")
 @cli.argument("--no-match-prefix", help="When set, non-matching files will be renamed with this prefix")
 @cli.argument("-k", "--keepname", action="store_true", help="keep original filename")
