@@ -61,19 +61,13 @@ def identify_and_update_file(path):
 
                 song.save()
 
-                if newpath.exists():
-                    cli.log.error('Can not rename file from "%s" to "%s": path exists!', path, newpath)
+                if cli.args.keepname:
+                    cli.log.info('Would rename file from "%s" to "%s"', path, newpath)
                 else:
-                    if cli.args.keepname:
-                        cli.log.info('Would rename file from "%s" to "%s"', path, newpath)
-                    else:
-                        cli.log.info('Renaming file from "%s" to "%s"', path, newpath)
-                        path.rename(newpath)
+                    cli.log.info('Renaming file from "%s" to "%s"', path, newpath)
+                    path.rename(newpath)
 
                 return True
-
-            cli.log.error('Could not look up file "%s", Artist: "%s", Title: "%s"', path, artist, title)
-            return False
 
     except acoustid.NoBackendError:
         cli.log.error('%s: Backend library not found!', path)
