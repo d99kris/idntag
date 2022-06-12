@@ -33,7 +33,7 @@ def cleanstr(str):
     return re.sub(r'\W+', '', str.replace(" ", "_"))
 
 
-def find_path(artist, title):
+def find_path(path, artist, title):
     """Returns a usable path for the file.
     """
     dupe_num = 0
@@ -55,7 +55,7 @@ def identify_and_update_file(path):
             song = taglib.File(str(path))
 
             if artist and title:
-                newpath = find_path(cleanstr(artist), cleanstr(title))
+                newpath = find_path(path, cleanstr(artist), cleanstr(title))
                 song.tags["ARTIST"] = [artist]
                 song.tags["TITLE"] = [title]
 
@@ -86,12 +86,19 @@ def identify_and_update_file(path):
         return False
 
     cli.log.error('%s: No matches found!', path)
+
+    if cli.args.no_match_prefix:
+        newpath = path.parent / (cli.args.no_match_prefix + path.name)
+        cli.log.info('Renaming file from "%s" to "%s"', path, newpath)
+        path.rename(newpath)
+
     return False
 
 
 @cli.argument('path', nargs='+', help='path of a file or directory')
 @cli.argument("-s", "--sep", default='-', help="seperator to go between artist and title (Default: -)")
 @cli.argument("-m", "--match", help="regex to match files against")
+@cli.argument("--no-match-prefix", help="When set, non-matching files will be renamed with this prefix")
 @cli.argument("-k", "--keepname", action="store_true", help="keep original filename")
 @cli.entrypoint('Identify artist and song name from specified audio files and update their ID3-tag meta-data  with correct data, and rename the files on format {Artist_Name}{--sep}{Track_Name}.')
 def main(cli):
