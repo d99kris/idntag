@@ -41,7 +41,7 @@ Pre-requisites Debian (incl. Debian-based like Raspbian):
 
 Pre-requisites Python:
 
-    pip3 install pyacoustid pytaglib
+    pip3 install milc pyacoustid pytaglib
 
 Download the source code:
 

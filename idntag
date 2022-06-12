@@ -6,13 +6,15 @@
 # idntag is distributed under the MIT license, see LICENSE for details.
 
 import acoustid
-import argparse
 import base64
-import glob
-import os
 import re
 import taglib
 import time
+from pathlib import Path
+
+from milc import set_metadata
+set_metadata(name='idntag', version='v1.04', author='Kristofer Berggren')
+from milc import cli
 
 
 def rate_limit(min_interval):
@@ -31,64 +33,87 @@ def cleanstr(str):
     return re.sub(r'\W+', '', str.replace(" ", "_"))
 
 
-def identify_and_update_file(path, keep_name):
-    rate_limit(1.0/3.0)
-    print(path + " : ", end='')
+def find_path(artist, title):
+    """Returns a usable path for the file.
+    """
+    dupe_num = 0
+    newpath = path.parent / f'{artist}{cli.args.sep}{title}{path.suffix}'
+
+    while newpath.exists():
+        dupe_num += 1
+        newpath = path.parent / f'{artist}{cli.args.sep}{title}_(Dupe_{dupe_num}){path.suffix}'
+
+    return newpath
+
+
+def identify_and_update_file(path):
+    cli.log.debug('Processing file %s', path)
     try:
         results = acoustid.match(base64.b64decode(b'Ym5jenB4cmtoOA=='), path)
+
+        for score, rid, title, artist in results:
+            song = taglib.File(str(path))
+
+            if artist and title:
+                newpath = find_path(cleanstr(artist), cleanstr(title))
+                song.tags["ARTIST"] = [artist]
+                song.tags["TITLE"] = [title]
+
+                song.save()
+
+                if newpath.exists():
+                    cli.log.error('Can not rename file from "%s" to "%s": path exists!', path, newpath)
+                else:
+                    if cli.args.keepname:
+                        cli.log.info('Would rename file from "%s" to "%s"', path, newpath)
+                    else:
+                        cli.log.info('Renaming file from "%s" to "%s"', path, newpath)
+                        path.rename(newpath)
+
+                return True
+
+            cli.log.error('Could not look up file "%s", Artist: "%s", Title: "%s"', path, artist, title)
+            return False
+
     except acoustid.NoBackendError:
-        print("FAIL : backend library not found")
+        cli.log.error('%s: Backend library not found!', path)
         return False
     except acoustid.FingerprintGenerationError:
-        print("FAIL : fingerprint generation error")
+        cli.log.error('%s: Fingerprint generation error!', path)
         return False
     except acoustid.WebServiceError as exc:
-        print("FAIL : web service error (" + exc.message + ")")
+        cli.log.error('%s: Web service error! (%s)', path, exc.message)
         return False
 
-    for score, rid, title, artist in results:
-        song = taglib.File(path)
-        song.tags["ARTIST"] = [artist]
-        song.tags["TITLE"] = [title]
-        song.save()
-
-        newpath = path
-        if not keep_name:
-            olddir, oldfile = os.path.split(path)
-            oldfile, oldext = os.path.splitext(path)
-            newpath = olddir + "/" + cleanstr(artist) + "-" + cleanstr(title) + oldext
-            # XXX: todo check if file exists before overwriting?
-            os.rename(path, newpath)
-
-        print("OK : " + newpath)
-        return True
-
-    print("FAIL : no matches found")
+    cli.log.error('%s: No matches found!', path)
     return False
 
 
-def main():
-    parser = argparse.ArgumentParser(prog="idntag", description=
-                                     "Identify artist and song name from specified "
-                                     "audio files and update their ID3-tag meta-data "
-                                     "with correct data, and rename the files on format "
-                                     "Artist_Name-Track_Name.")
-    parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.03')
-    parser.add_argument('path', nargs='+', help='path of a file or directory')
-    args = parser.parse_args()
-
-    abs_paths = [os.path.join(os.getcwd(), path) for path in args.path]
+@cli.argument('path', nargs='+', help='path of a file or directory')
+@cli.argument("-s", "--sep", default='-', help="seperator to go between artist and title (Default: -)")
+@cli.argument("-m", "--match", help="regex to match files against")
+@cli.argument("-k", "--keepname", action="store_true", help="keep original filename")
+@cli.entrypoint('Identify artist and song name from specified audio files and update their ID3-tag meta-data  with correct data, and rename the files on format {Artist_Name}{--sep}{Track_Name}.')
+def main(cli):
+    abs_paths = [Path(path).resolve() for path in cli.args.path]
     paths = set()
+    file_regex = re.compile(cli.args.match if cli.args.match else '.')
+
     for path in abs_paths:
-        if os.path.isfile(path):
+        if path.is_file():
             paths.add(path)
-        elif os.path.isdir(path):
-            abs_paths += glob.glob(path + '/*')
+        elif path.is_dir():
+            abs_paths += path.rglob('*')
 
     for path in paths:
-        identify_and_update_file(path, args.keepname)
+        if file_regex.match(path.name):
+            try:
+                rate_limit(1.0/3.0)
+                identify_and_update_file(path)
+            except Exception as e:
+                cli.log.error('Uncaught exception: %s', e)
+                cli.log.exception(e)
 
 
 if __name__ == "__main__":
-    main()
+    cli()
