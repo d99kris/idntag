@@ -1,9 +1,9 @@
 Idntag
 ======
 
-| **Linux** |
-|-----------|
-| [![Linux](https://github.com/d99kris/idntag/workflows/Linux/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3ALinux) |
+| **Linux** | **Mac** |
+|-----------|---------|
+| [![Linux](https://github.com/d99kris/idntag/workflows/Linux/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3ALinux) | [![macOS](https://github.com/d99kris/idntag/workflows/macOS/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3AmacOS) |
 
 Idntag is a command-line tool that identifies artist and song name in 
 specified audio files and updates their ID3-tag meta-data with correct data, 
@@ -27,7 +27,7 @@ Example Usage
 
 Supported Platforms
 ===================
-Idntag is primarily developed and tested on Linux.
+Idntag is developed and tested on Linux and macOS.
 
 Installation
 ============
@@ -79,4 +79,4 @@ Idntag is distributed under the MIT license. See LICENSE file.
 
 Keywords
 ========
-linux, fingerprint, music, mp3, automatically tag.
+linux, macos, fingerprint, music, mp3, automatically tag.

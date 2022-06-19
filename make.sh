@@ -75,7 +75,7 @@ if [[ "${DEPS}" == "1" ]]; then
       exiterr "deps failed (unsupported linux distro ${DISTRO}), exiting."
     fi
   elif [ "${OS}" == "Darwin" ]; then
-    true || exiterr "deps failed (mac), exiting."
+    brew install mp3info taglib chromaprint coreutils && pip3 install -U --global-option=build_ext --global-option="-I/usr/local/include/" --global-option="-L/usr/local/lib" pytaglib && pip3 install -U pyacoustid || exiterr "deps failed (mac), exiting."
   else
     exiterr "deps failed (unsupported os ${OS}), exiting."
   fi
