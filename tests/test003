@@ -19,8 +19,8 @@ if [[ "${RESULT}" != "${EXPECTED}" ]]; then
 fi
 
 # Test resulting filename
-FILEPATH="$(cat ${TMPDIR}/out.txt | awk -F ' : ' '{ print $3 }')"
-EXPECTED="${TMPDIR}/song.mp3"
+FILEPATH="$(realpath "$(cat ${TMPDIR}/out.txt | awk -F ' : ' '{ print $3 }')")"
+EXPECTED="$(realpath "${TMPDIR}/song.mp3")"
 if [[ "${FILEPATH}" != "${EXPECTED}" ]]; then
   echo "\"${FILEPATH}\" != \"${EXPECTED}\""
   RV="1"
