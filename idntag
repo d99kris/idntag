@@ -35,7 +35,7 @@ def identify_and_update_file(path, keep_name):
     rate_limit(1.0/3.0)
     print(path + " : ", end='')
     try:
-        results = acoustid.match(base64.b64decode(b'Ym5jenB4cmtoOA=='), path)
+        results = list(acoustid.match(base64.b64decode(b"Ym5jenB4cmtoOA=="), path))
     except acoustid.NoBackendError:
         print("FAIL : backend library not found")
         return False
@@ -46,25 +46,39 @@ def identify_and_update_file(path, keep_name):
         print("FAIL : web service error (" + exc.message + ")")
         return False
 
-    for score, rid, title, artist in results:
-        song = taglib.File(path)
-        song.tags["ARTIST"] = [artist]
-        song.tags["TITLE"] = [title]
-        song.save()
+    if len(results) == 0:
+        print("FAIL : no matches found")
+        return False
 
-        newpath = path
-        if not keep_name:
-            olddir, oldfile = os.path.split(path)
-            oldfile, oldext = os.path.splitext(path)
-            newpath = olddir + "/" + cleanstr(artist) + "-" + cleanstr(title) + oldext
-            # XXX: todo check if file exists before overwriting?
-            os.rename(path, newpath)
+    score, rid, title, artist = best_result(results)
+    song = taglib.File(path)
+    song.tags["ARTIST"] = [artist if artist is Not None else "unknown artist"]
+    song.tags["TITLE"] = [title if title is Not None else "unknown title"]
+    song.save()
 
-        print("OK : " + newpath)
-        return True
+    newpath = path
+    if not keep_name:
+        olddir, oldfile = os.path.split(path)
+        oldfile, oldext = os.path.splitext(path)
+        newpath = olddir + "/" + cleanstr(artist) + "-" + cleanstr(title) + oldext
+        # XXX: todo check if file exists before overwriting?
+        os.rename(path, newpath)
 
-    print("FAIL : no matches found")
-    return False
+    print("OK : " + newpath)
+    return True
+
+
+def best_result(results):
+    """
+    Returns the best result with non empty fields (sorted by score),
+    first one if all results have a missing field.
+    """
+    results.sort(key=lambda r: r[0])
+    for r in results:
+        if not None in r:
+            return r[0], r[1], r[2], r[3]
+
+    return result[0][0], result[0][1], result[0][2], result[0][3]
 
 
 def main():
