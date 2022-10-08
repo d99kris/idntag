@@ -59,6 +59,15 @@ Optionally install in system:
 
     sudo make install
 
+Installation - Third-Party Packages
+===================================
+Disclaimer: The following packages are not maintained nor reviewed by the
+author of `idntag`.
+
+Fedora
+------
+[Idntag](https://www.nosuchhost.net/~cheese/fedora/packages/36/x86_64/idntag.html)
+
 Usage
 =====
 
