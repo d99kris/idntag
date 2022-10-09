@@ -27,8 +27,10 @@ def rate_limit(min_interval):
     rate_limit.last_timestamp = time.time()
 
 
-def cleanstr(str):
-    return re.sub(r'\W+', '', str.replace(" ", "_"))
+def cleanstr(str, maxlen):
+    clean = re.sub(r'\W+', '', str.replace(" ", "_"))
+    cleansubstr = clean[0 : maxlen]
+    return cleansubstr
 
 
 def identify_and_update_file(path, keep_name, uselib):
@@ -61,7 +63,7 @@ def identify_and_update_file(path, keep_name, uselib):
     if not keep_name:
         olddir, oldfile = os.path.split(path)
         oldfile, oldext = os.path.splitext(path)
-        newpath = olddir + "/" + cleanstr(artist) + "-" + cleanstr(title) + oldext
+        newpath = olddir + "/" + cleanstr(artist, 100) + "-" + cleanstr(title, 100) + oldext
         # XXX: todo check if file exists before overwriting?
         os.rename(path, newpath)
 
@@ -90,7 +92,7 @@ def main():
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
     parser.add_argument("-l", "--uselib", action="store_true", help="use chromaprint lib instead of tools")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.05')
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.06')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 
