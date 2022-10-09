@@ -2,7 +2,7 @@
 
 # make.sh
 #
-# Copyright (C) 2020 Kristofer Berggren
+# Copyright (C) 2020-2022 Kristofer Berggren
 # All rights reserved.
 #
 # See LICENSE for redistribution information.
@@ -70,7 +70,7 @@ if [[ "${DEPS}" == "1" ]]; then
   if [ "${OS}" == "Linux" ]; then
     DISTRO="$(lsb_release -i | awk -F':\t' '{print $2}')"
     if [[ "${DISTRO}" == "Ubuntu" ]]; then
-      sudo apt -y install mp3info python3-pip libtag1-dev libchromaprint-dev ubuntu-restricted-extras ffmpeg && pip3 install -U pyacoustid pytaglib || exiterr "deps failed (linux), exiting."
+      sudo apt -y install mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ubuntu-restricted-extras ffmpeg && pip3 install -U pyacoustid pytaglib || exiterr "deps failed (linux), exiting."
     else
       exiterr "deps failed (unsupported linux distro ${DISTRO}), exiting."
     fi
