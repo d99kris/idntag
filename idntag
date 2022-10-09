@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) 2018 Kristofer Berggren
+# Copyright (c) 2018-2022 Kristofer Berggren
 # All rights reserved.
 #
 # idntag is distributed under the MIT license, see LICENSE for details.
@@ -31,11 +31,12 @@ def cleanstr(str):
     return re.sub(r'\W+', '', str.replace(" ", "_"))
 
 
-def identify_and_update_file(path, keep_name):
+def identify_and_update_file(path, keep_name, uselib):
     rate_limit(1.0/3.0)
     print(path + " : ", end='')
     try:
-        results = list(acoustid.match(base64.b64decode(b"Ym5jenB4cmtoOA=="), path))
+        fpcalc = not uselib
+        results = list(acoustid.match(base64.b64decode(b'SGU2STZBWUtOMQ=='), path, force_fpcalc=fpcalc))
     except acoustid.NoBackendError:
         print("FAIL : backend library not found")
         return False
@@ -88,7 +89,8 @@ def main():
                                      "with correct data, and rename the files on format "
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.03')
+    parser.add_argument("-l", "--uselib", action="store_true", help="use chromaprint lib instead of tools")
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.04')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 
@@ -101,7 +103,7 @@ def main():
             abs_paths += glob.glob(path + '/*')
 
     for path in paths:
-        identify_and_update_file(path, args.keepname)
+        identify_and_update_file(path, args.keepname, args.uselib)
 
 
 if __name__ == "__main__":

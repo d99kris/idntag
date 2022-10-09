@@ -33,11 +33,11 @@ Installation
 ============
 Pre-requisites Ubuntu:
 
-    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev ubuntu-restricted-extras ffmpeg
+    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ubuntu-restricted-extras ffmpeg
 
 Pre-requisites Debian (incl. Debian-based like Raspbian):
 
-    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev ffmpeg
+    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ffmpeg
 
 Pre-requisites Python:
 
@@ -59,18 +59,30 @@ Optionally install in system:
 
     sudo make install
 
+Installation - Third-Party Packages
+===================================
+Disclaimer: The following packages are not maintained nor reviewed by the
+author of `idntag`.
+
+Fedora
+------
+[Idntag](https://www.nosuchhost.net/~cheese/fedora/packages/36/x86_64/idntag.html)
+
 Usage
 =====
 
 General usage syntax:
 
-    idntag [-h] [-k] [-v] path [path ...]
+    idntag [-k] [-l] path [path ...]
+    idntag -h
+    idntag -v
 
 Options:
 
     path            path of a file or directory
     -h, --help      show this help message and exit
     -k, --keepname  keep original filename
+    -l, --uselib    use chromaprint lib instead of tools
     -v, --version   show program's version number and exit
 
 License
