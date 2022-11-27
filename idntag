@@ -142,7 +142,7 @@ def main():
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
     parser.add_argument("-l", "--uselib", action="store_true", help="use chromaprint lib instead of tools")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.09')
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.10')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 
