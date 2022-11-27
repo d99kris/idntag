@@ -88,9 +88,16 @@ def identify_and_update_file(path, keep_name, uselib):
         return False
 
     score, rid, title, artist = best_result(results)
+
+    if not title and not artist:
+        print("FAIL : match is missing artist and title")
+        return False
+
+    artist = artist if artist else "Unknown"
+    title = title if title else "Unknown"
     song = taglib.File(path)
-    song.tags["ARTIST"] = [artist if artist else "Unknown"]
-    song.tags["TITLE"] = [title if title else "Unknown"]
+    song.tags["ARTIST"] = [artist]
+    song.tags["TITLE"] = [title]
     song.save()
 
     newpath = path
@@ -115,7 +122,7 @@ def best_result(results):
         if not None in r:
             return r[0], r[1], r[2], r[3]
 
-    return result[0][0], result[0][1], result[0][2], result[0][3]
+    return results[0][0], results[0][1], results[0][2], results[0][3]
 
 
 def main():
@@ -126,7 +133,7 @@ def main():
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
     parser.add_argument("-l", "--uselib", action="store_true", help="use chromaprint lib instead of tools")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.07')
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.08')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 
