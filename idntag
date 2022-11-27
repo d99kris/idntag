@@ -5,14 +5,39 @@
 #
 # idntag is distributed under the MIT license, see LICENSE for details.
 
-import acoustid
 import argparse
 import base64
 import glob
 import os
 import re
-import taglib
+import sys
 import time
+
+extlibnames = ['acoustid', 'taglib']
+for extlibname in extlibnames:
+    try:
+        extlib = __import__(extlibname)
+    except:
+        if extlibname == "acoustid":
+            err = sys.exc_info()[0].__name__ + ": " + str(sys.exc_info()[1])
+            print(err)
+            print("")
+            print("Please ensure 'pyacoustid' is installed. To install:")
+            print("pip3 install -U pyacoustid")
+        elif extlibname == "taglib":
+            err = sys.exc_info()[0].__name__ + ": " + str(sys.exc_info()[1])
+            print(err)
+            print("")
+            print("Please ensure 'pytaglib' is installed. ", end='')
+            print("To install dependencies (Debian/Ubuntu):")
+            print("sudo apt install libtag1-dev")
+            print("")
+            print("To install pytaglib:")
+            print("pip3 install -U pytaglib")
+
+        sys.exit(1)
+    else:
+        globals()[extlibname] = extlib
 
 
 def rate_limit(min_interval):
@@ -40,11 +65,20 @@ def identify_and_update_file(path, keep_name, uselib):
         fpcalc = not uselib
         results = list(acoustid.match(base64.b64decode(b'SGU2STZBWUtOMQ=='), path, force_fpcalc=fpcalc))
     except acoustid.NoBackendError:
-        print("FAIL : backend library not found")
-        return False
+        if uselib:
+            print("FAIL : backend library not found")
+            print("")
+            print("To install backend library (Debian/Ubuntu):")
+            print("sudo apt install libchromaprint-dev")
+        else:
+            print("FAIL : backend tools not found")
+            print("")
+            print("To install backend tools (Debian/Ubuntu):")
+            print("sudo apt install libchromaprint-tools")
+        sys.exit(1)
     except acoustid.FingerprintGenerationError:
         print("FAIL : fingerprint generation error")
-        return False
+        sys.exit(1)
     except acoustid.WebServiceError as exc:
         print("FAIL : web service error (" + exc.message + ")")
         return False
@@ -92,7 +126,7 @@ def main():
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
     parser.add_argument("-l", "--uselib", action="store_true", help="use chromaprint lib instead of tools")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.06')
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.07')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 
