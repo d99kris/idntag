@@ -33,11 +33,11 @@ Installation
 ============
 Pre-requisites Ubuntu:
 
-    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ubuntu-restricted-extras ffmpeg
+    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ffmpeg python3-acoustid python3-taglib ubuntu-restricted-extras
 
 Pre-requisites Debian (incl. Debian-based like Raspbian):
 
-    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ffmpeg
+    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ffmpeg python3-acoustid python3-taglib
 
 Download the source code:
 
