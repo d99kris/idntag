@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) 2018-2022 Kristofer Berggren
+# Copyright (c) 2018-2025 Kristofer Berggren
 # All rights reserved.
 #
 # idntag is distributed under the MIT license, see LICENSE for details.
@@ -143,7 +143,7 @@ def main():
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
     parser.add_argument("-l", "--uselib", action="store_true", help="use chromaprint lib instead of tools")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.11')
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.12')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 

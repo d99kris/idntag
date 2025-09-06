@@ -1,23 +1,23 @@
 Idntag
 ======
 
-| **Linux** | **Mac** |
-|-----------|---------|
-| [![Linux](https://github.com/d99kris/idntag/workflows/Linux/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3ALinux) | [![macOS](https://github.com/d99kris/idntag/workflows/macOS/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3AmacOS) |
+| **Linux** |
+|-----------|
+| [![Linux](https://github.com/d99kris/idntag/workflows/Linux/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3ALinux) |
 
-Idntag is a command-line tool that identifies artist and song name in 
-specified audio files and updates their ID3-tag meta-data with correct data, 
+Idntag is a command-line tool that identifies artist and song name in
+specified audio files and updates their ID3-tag meta-data with correct data,
 and renames the files on format Artist_Name-Track_Name.
 
 **Warning:** This tool modifies and renames its input files. The quality of song
-identification is not perfect and may have some false detections. It is 
+identification is not perfect and may have some false detections. It is
 therefore recommended to first make a copy of the files to be identified, so
 there is a backup in case the results are not good.
 
 Example Usage
 =============
 
-    $ idntag tests/song.mp3 
+    $ idntag tests/song.mp3
     tests/song.mp3 : OK : tests/Broke_For_Free-Night_Owl.mp3
     $ ls tests/
     Broke_For_Free-Night_Owl.mp3
@@ -27,7 +27,7 @@ Example Usage
 
 Supported Platforms
 ===================
-Idntag is developed and tested on Linux and macOS.
+Idntag is developed and tested on Linux.
 
 Installation
 ============
@@ -38,10 +38,6 @@ Pre-requisites Ubuntu:
 Pre-requisites Debian (incl. Debian-based like Raspbian):
 
     sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ffmpeg
-
-Pre-requisites Python:
-
-    pip3 install pyacoustid pytaglib
 
 Download the source code:
 
@@ -91,4 +87,4 @@ Idntag is distributed under the MIT license. See LICENSE file.
 
 Keywords
 ========
-linux, macos, fingerprint, music, mp3, automatically tag.
+linux, fingerprint, music, mp3, automatically tag.

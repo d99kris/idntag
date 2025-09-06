@@ -2,7 +2,7 @@
 
 # make.sh
 #
-# Copyright (C) 2020-2022 Kristofer Berggren
+# Copyright (C) 2020-2025 Kristofer Berggren
 # All rights reserved.
 #
 # See LICENSE for redistribution information.
@@ -74,8 +74,6 @@ if [[ "${DEPS}" == "1" ]]; then
     else
       exiterr "deps failed (unsupported linux distro ${DISTRO}), exiting."
     fi
-  elif [ "${OS}" == "Darwin" ]; then
-    brew install mp3info taglib chromaprint coreutils && pip3 install -U --global-option=build_ext --global-option="-I/usr/local/include/" --global-option="-L/usr/local/lib" pytaglib && pip3 install -U pyacoustid || exiterr "deps failed (mac), exiting."
   else
     exiterr "deps failed (unsupported os ${OS}), exiting."
   fi
