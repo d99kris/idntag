@@ -61,6 +61,11 @@ def cleanstr(str, maxlen):
 def identify_and_update_file(path, keep_name, uselib):
     rate_limit(1.0/3.0)
     print(path + " : ", end='')
+
+    if not path.lower().endswith(".mp3"):
+        print("FAIL : unsupported file type")
+        return False
+
     try:
         fpcalc = not uselib
         results = list(acoustid.match(base64.b64decode(b'SGU2STZBWUtOMQ=='), path, force_fpcalc=fpcalc))
@@ -143,7 +148,7 @@ def main():
                                      "Artist_Name-Track_Name.")
     parser.add_argument("-k", "--keepname", action="store_true", help="keep original filename")
     parser.add_argument("-l", "--uselib", action="store_true", help="use chromaprint lib instead of tools")
-    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.13')
+    parser.add_argument("-v", "--version", action='version', version='%(prog)s v1.14')
     parser.add_argument('path', nargs='+', help='path of a file or directory')
     args = parser.parse_args()
 

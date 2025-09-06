@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Environment
+BUILDDIR="$(pwd)"
+TMPDIR=$(mktemp -d)
+pushd ${TMPDIR} > /dev/null
+
+# Update tag and filename
+RV="0"
+cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/song.mp3
+cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/SONG.MP3
+touch ${TMPDIR}/nonsong.nfo
+touch ${TMPDIR}/nonsong.txt
+${BUILDDIR}/idntag .
+if [[ "${?}" != "0" ]]; then
+  echo "exit code not 0"
+  RV="1"
+fi
+
+EXPECTED="Broke_For_Free-Night_Owl.mp3"
+if [[ ! -f "${EXPECTED}" ]]; then
+  echo "expected file ${EXPECTED} not present"
+  RV="1"
+fi
+
+EXPECTED="Broke_For_Free-Night_Owl.MP3"
+if [[ ! -f "${EXPECTED}" ]]; then
+  echo "expected file ${EXPECTED} not present"
+  RV="1"
+fi
+
+EXPECTED="nonsong.nfo"
+if [[ ! -f "${EXPECTED}" ]]; then
+  echo "expected file ${EXPECTED} not present"
+  RV="1"
+fi
+
+EXPECTED="nonsong.txt"
+if [[ ! -f "${EXPECTED}" ]]; then
+  echo "expected file ${EXPECTED} not present"
+  RV="1"
+fi
+
+# Cleanup
+popd > /dev/null
+rm -rf ${TMPDIR}
+exit ${RV}

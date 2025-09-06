@@ -30,4 +30,5 @@ add_unit_test(test001)
 add_unit_test(test002)
 add_unit_test(test003)
 add_unit_test(test004)
+add_unit_test(test005)
 
