@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# test004 - detect and rename english song
+
 # Environment
 BUILDDIR="$(pwd)"
 TMPDIR=$(mktemp -d)
@@ -7,12 +9,12 @@ pushd ${TMPDIR} > /dev/null
 
 # Update tag and keep filename
 RV="0"
-cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/song.mp3
-${BUILDDIR}/idntag song.mp3 > ${TMPDIR}/out.txt 2> ${TMPDIR}/err.txt
+cp ${BUILDDIR}/../tests/song_en.mp3 ${TMPDIR}/song_en.mp3
+${BUILDDIR}/idntag -d -r song_en.mp3 > ${TMPDIR}/out.txt 2> ${TMPDIR}/err.txt
 
 # Test result
 RESULT="$(cat ${TMPDIR}/out.txt | awk -F ' : ' '{ print $2 }')"
-EXPECTED="OK"
+EXPECTED="PASS"
 if [[ "${RESULT}" != "${EXPECTED}" ]]; then
   echo "\"${RESULT}\" != \"${EXPECTED}\""
   RV="1"

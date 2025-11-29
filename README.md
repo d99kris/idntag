@@ -1,11 +1,11 @@
-Idntag
-======
+Idntag - Identify and tag audio files
+=====================================
 
-| **Linux** |
-|-----------|
-| [![Linux](https://github.com/d99kris/idntag/workflows/Linux/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3ALinux) |
+| **Linux** | **Mac** |
+|-----------|---------|
+| [![Linux](https://github.com/d99kris/idntag/workflows/Linux/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3ALinux) | [![macOS](https://github.com/d99kris/idntag/workflows/macOS/badge.svg)](https://github.com/d99kris/idntag/actions?query=workflow%3AmacOS) |
 
-Idntag is a command-line tool that identifies artist and song name in
+Idntag is a command-line tool that identifies artist and title of
 specified audio files and updates their ID3-tag meta-data with correct data,
 and renames the files on format Artist_Name-Track_Name.
 
@@ -14,12 +14,53 @@ identification is not perfect and may have some false detections. It is
 therefore recommended to first make a copy of the files to be identified, so
 there is a backup in case the results are not good.
 
+Usage
+=====
+Usage:
+
+    idntag [OPTIONS] PATHS...
+
+Command-line options:
+
+    -c, --clear            clear tags
+    -d, --detect           detect / identify audio
+    -e, --edit             edit / confirm detected tags
+    -r, --rename           rename file based on tags
+
+    -R, --report           specify report format
+    -h, --help             display help
+    -v, --verbose          enable verbose debug output
+    -V, --version          display version information
+    PATHS                  files or directories to process
+
+Output format fields:
+
+    %i          input file name
+    %o          output file name
+    %r          result (PASS or FAIL)
+
+Interactive editor commands:
+
+    Enter       next field / save
+    Tab         next field
+    Sh-Tab      previous field
+    Ctrl-c      cancel
+    Ctrl-d      detect / perform identification
+    Ctrl-x      save
+
+Interactive editor text input commands:
+
+    Ctrl-a      move cursor to start of line
+    Ctrl-e      move cursor to end of line
+    Ctrl-k      delete from cursor to end of line
+    Ctrl-u      delete from cursor to start of line
+
 Example Usage
 =============
 
-    $ idntag tests/song.mp3
-    tests/song.mp3 : OK : tests/Broke_For_Free-Night_Owl.mp3
-    $ ls tests/
+    $ idntag -d -r tests/song_en.mp3
+    tests/song_en.mp3 : PASS : tests/Broke_For_Free-Night_Owl.mp3
+    $ ls tests/Broke*
     Broke_For_Free-Night_Owl.mp3
     $ ffprobe tests/Broke_For_Free-Night_Owl.mp3 2>&1 | grep -e artist -e title
     artist          : Broke For Free
@@ -27,59 +68,62 @@ Example Usage
 
 Supported Platforms
 ===================
-Idntag is developed and tested on Linux.
+Idntag is developed and tested on Linux and macOS. Current version has been
+tested on:
 
-Installation
-============
-Pre-requisites Ubuntu:
+- macOS Sequoia 15.6
+- Ubuntu 24.04 LTS
 
-    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ffmpeg python3-acoustid python3-taglib ubuntu-restricted-extras
-
-Pre-requisites Debian (incl. Debian-based like Raspbian):
-
-    sudo apt install git cmake mp3info python3-pip libtag1-dev libchromaprint-dev libchromaprint-tools ffmpeg python3-acoustid python3-taglib
-
-Download the source code:
+Build from Source
+=================
+**Get Source**
 
     git clone https://github.com/d99kris/idntag && cd idntag
 
-Generate Makefile and build:
+Using make.sh script
+--------------------
+If using macOS or Ubuntu, one can use the `make.sh` script provided.
+
+**Dependencies**
+
+    ./make.sh deps
+
+**Build / Install**
+
+    ./make.sh build && ./make.sh install
+
+Manually
+--------
+**Dependencies**
+
+macOS Brew
+
+    brew install cmake pkg-config help2man ncurses libtag curl nlohmann-json chromaprint mp3info gsed
+
+macOS Ports
+
+    sudo port install cmake help2man ncurses libtag curl nlohmann-json chromaprint mp3info gsed
+
+Ubuntu
+
+    sudo apt install build-essential cmake pkg-config help2man libncurses-dev libncursesw5-dev libtag1-dev libcurl4-openssl-dev nlohmann-json3-dev libchromaprint-tools mp3info
+
+**Build**
 
     mkdir -p build && cd build && cmake .. && make -s
 
-Optionally run tests:
-
-    ctest --output-on-failure
-
-Optionally install in system:
+**Install**
 
     sudo make install
 
-Installation - Third-Party Packages
-===================================
+Install using Package Manager
+=============================
 Disclaimer: The following packages are not maintained nor reviewed by the
 author of `idntag`.
 
-Fedora
-------
+**Fedora**
+
 [Idntag](https://www.nosuchhost.net/~cheese/fedora/packages/36/x86_64/idntag.html)
-
-Usage
-=====
-
-General usage syntax:
-
-    idntag [-k] [-l] path [path ...]
-    idntag -h
-    idntag -v
-
-Options:
-
-    path            path of a file or directory
-    -h, --help      show this help message and exit
-    -k, --keepname  keep original filename
-    -l, --uselib    use chromaprint lib instead of tools
-    -v, --version   show program's version number and exit
 
 License
 =======
@@ -87,4 +131,4 @@ Idntag is distributed under the MIT license. See LICENSE file.
 
 Keywords
 ========
-linux, fingerprint, music, mp3, automatically tag.
+linux, macos, fingerprint, music, mp3, automatically tag, acoustid.

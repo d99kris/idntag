@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# test001 - detect and rename english song
+# test007 - detect tags and then clear them
 
 # Environment
 BUILDDIR="$(pwd)"
@@ -20,9 +20,17 @@ if [[ "${FILELIST}" != "${EXPECTED}" ]]; then
   RV="1"
 fi
 
+# Clear tags
+RV="0"
+${BUILDDIR}/idntag -c *.mp3
+if [[ "${?}" != "0" ]]; then
+  echo "idntag -c != 0"
+  RV="1"
+fi
+
 # Test artist tag
 ARTIST=$(mp3info -p %a *.mp3)
-EXPECTED="Broke For Free"
+EXPECTED=""
 if [[ "${ARTIST}" != "${EXPECTED}" ]]; then
   echo "\"${ARTIST}\" != \"${EXPECTED}\""
   RV="1"
@@ -30,7 +38,7 @@ fi
 
 # Test title tag
 TITLE=$(mp3info -p %t *.mp3)
-EXPECTED="Night Owl"
+EXPECTED=""
 if [[ "${TITLE}" != "${EXPECTED}" ]]; then
   echo "\"${TITLE}\" != \"${EXPECTED}\""
   RV="1"

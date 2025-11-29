@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# test005 - detect and rename multiple files in directory, exclude unsupported file extensions
+
 # Environment
 BUILDDIR="$(pwd)"
 TMPDIR=$(mktemp -d)
@@ -7,13 +9,13 @@ pushd ${TMPDIR} > /dev/null
 
 # Update tag and filename
 RV="0"
-cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/song.mp3
-cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/SONG.MP3
+cp ${BUILDDIR}/../tests/song_en.mp3 ${TMPDIR}/song_en.mp3
+cp ${BUILDDIR}/../tests/song_en.mp3 ${TMPDIR}/songcopy.mp3
 touch ${TMPDIR}/nonsong.nfo
 touch ${TMPDIR}/nonsong.txt
-${BUILDDIR}/idntag .
-if [[ "${?}" != "0" ]]; then
-  echo "exit code not 0"
+${BUILDDIR}/idntag -d -r .
+if [[ "${?}" == "0" ]]; then
+  echo "exit code 0"
   RV="1"
 fi
 
@@ -23,7 +25,7 @@ if [[ ! -f "${EXPECTED}" ]]; then
   RV="1"
 fi
 
-EXPECTED="Broke_For_Free-Night_Owl.MP3"
+EXPECTED="Broke_For_Free-Night_Owl_1.mp3"
 if [[ ! -f "${EXPECTED}" ]]; then
   echo "expected file ${EXPECTED} not present"
   RV="1"

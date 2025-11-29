@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# test002 - detect english song (without rename)
+
 # Environment
 BUILDDIR="$(pwd)"
 TMPDIR=$(mktemp -d)
@@ -7,12 +9,12 @@ pushd ${TMPDIR} > /dev/null
 
 # Update tag and keep filename
 RV="0"
-cp ${BUILDDIR}/../tests/song.mp3 ${TMPDIR}/song.mp3
-${BUILDDIR}/idntag -k song.mp3
+cp ${BUILDDIR}/../tests/song_en.mp3 ${TMPDIR}/song_en.mp3
+${BUILDDIR}/idntag -d song_en.mp3
 
 # Test filename
 FILELIST=$(ls -1)
-EXPECTED="song.mp3"
+EXPECTED="song_en.mp3"
 if [[ "${FILELIST}" != "${EXPECTED}" ]]; then
   echo "\"${FILELIST}\" != \"${EXPECTED}\""
   RV="1"
