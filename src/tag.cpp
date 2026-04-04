@@ -1,6 +1,6 @@
 // tag.cpp
 //
-// Copyright (c) 2025 Kristofer Berggren
+// Copyright (c) 2025-2026 Kristofer Berggren
 // All rights reserved.
 //
 // idntag is distributed under the MIT license, see LICENSE for details.
@@ -8,13 +8,68 @@
 #include "tag.h"
 
 #include <filesystem>
+#include <memory>
 #include <regex>
+
+#include <sys/stat.h>
 
 #include <taglib/id3v2tag.h>
 #include <taglib/mpegfile.h>
 #include <taglib/tag.h>
 
 #include "log.h"
+
+// RAII helper: ensures a file is owner-writable while in scope,
+// then restores the original permissions on destruction.
+// Needed because TagLib 2.x opens read-only files as readOnly
+// and save() refuses to write them.
+class ScopedWritable
+{
+public:
+  explicit ScopedWritable(const std::string& path)
+    : m_Path(path)
+    , m_Restored(true)
+  {
+    struct stat st;
+    if (stat(path.c_str(), &st) != 0)
+    {
+      return;
+    }
+
+    m_OrigMode = st.st_mode;
+    if (m_OrigMode & S_IWUSR)
+    {
+      return; // already writable
+    }
+
+    mode_t newMode = m_OrigMode | S_IWUSR;
+    if (chmod(path.c_str(), newMode) == 0)
+    {
+      m_Restored = false;
+      Log::Debug("ScopedWritable: chmod %03o -> %03o: %s",
+                 m_OrigMode & 0777, newMode & 0777, path.c_str());
+    }
+  }
+
+  ~ScopedWritable()
+  {
+    Restore();
+  }
+
+  void Restore()
+  {
+    if (!m_Restored)
+    {
+      chmod(m_Path.c_str(), m_OrigMode);
+      m_Restored = true;
+    }
+  }
+
+private:
+  std::string m_Path;
+  mode_t m_OrigMode = 0;
+  bool m_Restored;
+};
 
 std::string Tag::MakePath(const std::string& p_FilePath, std::string& p_Artist,
                           std::string& p_Title)
@@ -88,33 +143,47 @@ bool Tag::Read(const std::string& p_FilePath, std::string& p_Artist, std::string
 }
 
 bool Tag::Write(const std::string& p_FilePath, const std::string& p_Artist,
-                const std::string& p_Title)
+                const std::string& p_Title, bool p_Force)
 {
+  // When --force is set, temporarily make read-only files writable
+  // (TagLib 2.x opens read-only files as readOnly and save() refuses to write).
+  std::unique_ptr<ScopedWritable> writable = p_Force ? std::make_unique<ScopedWritable>(p_FilePath) : nullptr;
+
   TagLib::MPEG::File file(p_FilePath.c_str());
+  Log::Debug("Tag::Write open: valid=%d readOnly=%d file=%s",
+             file.isValid(), file.readOnly(), p_FilePath.c_str());
   if (!file.isValid())
   {
+    Log::Debug("Tag::Write file not valid: %s", p_FilePath.c_str());
     return false;
   }
 
   TagLib::Tag* tag = file.ID3v2Tag(true);
   if (!tag)
   {
+    Log::Debug("Tag::Write ID3v2Tag returned null: %s", p_FilePath.c_str());
     return false;
   }
 
+  Log::Debug("Tag::Write setting artist='%s' title='%s'", p_Artist.c_str(), p_Title.c_str());
   tag->setArtist(TagLib::String(p_Artist, TagLib::String::UTF8));
   tag->setTitle(TagLib::String(p_Title, TagLib::String::UTF8));
 
   if (!file.save())
   {
+    Log::Debug("Tag::Write save() returned false: %s (readOnly=%d)",
+               p_FilePath.c_str(), file.readOnly());
     return false;
   }
 
+  Log::Debug("Tag::Write success: %s", p_FilePath.c_str());
   return true;
 }
 
-bool Tag::Clear(const std::string& p_FilePath)
+bool Tag::Clear(const std::string& p_FilePath, bool p_Force)
 {
+  std::unique_ptr<ScopedWritable> writable = p_Force ? std::make_unique<ScopedWritable>(p_FilePath) : nullptr;
+
   TagLib::MPEG::File file(p_FilePath.c_str());
   if (!file.isValid())
   {

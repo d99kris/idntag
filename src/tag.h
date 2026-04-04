@@ -17,8 +17,8 @@ public:
   static bool Read(const std::string& p_FilePath, std::string& p_Artist,
                    std::string& p_Title);
   static bool Write(const std::string& p_FilePath, const std::string& p_Artist,
-                    const std::string& p_Title);
-  static bool Clear(const std::string& p_FilePath);
+                    const std::string& p_Title, bool p_Force = false);
+  static bool Clear(const std::string& p_FilePath, bool p_Force = false);
 
 private:
   static std::string SanitizeFileName(const std::string& p_FileName);

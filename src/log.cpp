@@ -1,6 +1,6 @@
 // log.cpp
 //
-// Copyright (c) 2025 Kristofer Berggren
+// Copyright (c) 2025-2026 Kristofer Berggren
 // All rights reserved.
 //
 // idntag is distributed under the MIT license, see LICENSE for details.
@@ -18,9 +18,9 @@ void Log::Debug(const char* p_Format, ...)
   {
     va_list vaList;
     va_start(vaList, p_Format);
-    vprintf(p_Format, vaList);
+    vfprintf(stderr, p_Format, vaList);
     va_end(vaList);
-    printf("\n");
+    fprintf(stderr, "\n");
   }
 }
 

@@ -1,13 +1,13 @@
 // version.cpp
 //
-// Copyright (c) 2025 Kristofer Berggren
+// Copyright (c) 2025-2026 Kristofer Berggren
 // All rights reserved.
 //
 // idntag is distributed under the MIT license, see LICENSE for details.
 
 #include "version.h"
 
-#define APP_VERSION "2.00"
+#define APP_VERSION "2.01"
 
 std::string Version::GetAppName(bool p_WithVersion)
 {

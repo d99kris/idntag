@@ -1,6 +1,6 @@
 // main.cpp
 //
-// Copyright (c) 2025 Kristofer Berggren
+// Copyright (c) 2025-2026 Kristofer Berggren
 // All rights reserved.
 //
 // idntag is distributed under the MIT license, see LICENSE for details.
@@ -26,6 +26,7 @@ int main(int argc, char* argv[])
   bool clear = false;
   bool detect = false;
   bool edit = false;
+  bool force = false;
   bool rename = false;
   std::string reportFormat = "%i : %r : %o";
   std::string invalidarg;
@@ -48,6 +49,10 @@ int main(int argc, char* argv[])
     else if ((arg == "-e") || (arg == "--edit"))
     {
       edit = true;
+    }
+    else if ((arg == "-f") || (arg == "--force"))
+    {
+      force = true;
     }
     else if ((arg == "-h") || (arg == "--help"))
     {
@@ -120,37 +125,44 @@ int main(int argc, char* argv[])
 
     if (result && clear)
     {
-      result = Tag::Clear(filePath);
+      result = Tag::Clear(filePath, force);
     }
 
     if (result && (detect || edit || rename))
     {
       Tag::Read(filePath, artist, title);
+      Log::Debug("Tag::Read artist='%s' title='%s'", artist.c_str(), title.c_str());
       result = detect || edit || (!artist.empty() && !title.empty());
     }
 
     if (result && detect)
     {
       result = AcoustId::Identify(filePath, artist, title);
+      Log::Debug("AcoustId::Identify result=%d artist='%s' title='%s'",
+                 result, artist.c_str(), title.c_str());
     }
 
     if (result && edit)
     {
       result = Editor::Edit(filePath, artist, title);
+      Log::Debug("Editor::Edit result=%d", result);
     }
 
     std::string newFilePath = filePath;
     if (result && (detect || edit || rename))
     {
-      result = Tag::Write(filePath, artist, title);
+      result = Tag::Write(filePath, artist, title, force);
+      Log::Debug("Tag::Write result=%d file=%s", result, filePath.c_str());
 
       if (result && rename)
       {
         newFilePath = Tag::MakePath(filePath, artist, title);
         result = Util::Rename(filePath, newFilePath);
+        Log::Debug("Rename result=%d from=%s to=%s", result, filePath.c_str(), newFilePath.c_str());
       }
     }
 
+    Log::Debug("Final result=%d file=%s", result, filePath.c_str());
     const std::string report = Util::MakeReport(reportFormat, filePath, newFilePath, result);
     if (!report.empty())
     {
@@ -180,6 +192,7 @@ void ShowHelp(bool p_Verbose)
       "    -c, --clear            clear tags\n"
       "    -d, --detect           detect / identify audio\n"
       "    -e, --edit             edit / confirm detected tags\n"
+      "    -f, --force            force update read-only files\n"
       "    -r, --rename           rename file based on tags\n"
       "\n"
       "    -R, --report           specify report format\n"
