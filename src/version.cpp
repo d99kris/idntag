@@ -7,7 +7,7 @@
 
 #include "version.h"
 
-#define APP_VERSION "2.01"
+#define APP_VERSION "2.02"
 
 std::string Version::GetAppName(bool p_WithVersion)
 {
