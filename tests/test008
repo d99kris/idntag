@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# test008 - rename song using id3v1 tag (without id3v2 tag)
+
+# Environment
+BUILDDIR="$(pwd)"
+TMPDIR=$(mktemp -d)
+pushd ${TMPDIR} > /dev/null
+
+# Clear tags and set id3v1 tag only
+RV="0"
+cp ${BUILDDIR}/../tests/song_en.mp3 ${TMPDIR}/song_en.mp3
+${BUILDDIR}/idntag -c song_en.mp3
+mp3info -a "Broke For Free" -t "Night Owl" song_en.mp3
+
+# Rename based on tag
+${BUILDDIR}/idntag -r song_en.mp3
+if [[ "${?}" != "0" ]]; then
+  echo "idntag -r != 0"
+  RV="1"
+fi
+
+# Test filename
+FILELIST=$(ls -1)
+EXPECTED="Broke_For_Free-Night_Owl.mp3"
+if [[ "${FILELIST}" != "${EXPECTED}" ]]; then
+  echo "\"${FILELIST}\" != \"${EXPECTED}\""
+  RV="1"
+fi
+
+# Cleanup
+popd > /dev/null
+rm -rf ${TMPDIR}
+exit ${RV}

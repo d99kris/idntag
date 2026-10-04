@@ -115,13 +115,10 @@ bool Tag::Read(const std::string& p_FilePath, std::string& p_Artist, std::string
     return false;
   }
 
-  // Prefer ID3v2 tag; if not present, fall back to generic tag (e.g. ID3v1)
-  TagLib::Tag* tag = file.ID3v2Tag(false);
-  if (!tag)
-  {
-    tag = file.tag();
-  }
-
+  // Generic tag prefers ID3v2 per field, falling back to APE and ID3v1 for
+  // empty fields (ID3v2Tag() cannot be used for this, as TagLib returns an
+  // empty in-memory ID3v2 tag even when the file has none)
+  TagLib::Tag* tag = file.tag();
   if (!tag)
   {
     return false;
