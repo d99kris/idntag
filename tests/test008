@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# test008 - rename song using id3v1 tag (without id3v2 tag)
+# test008 - rename song using id3v1 tag (without id3v2 tag), and check that
+#           id3v1 tag is replaced by id3v2 tag keeping other fields
 
 # Environment
 BUILDDIR="$(pwd)"
@@ -11,7 +12,7 @@ pushd ${TMPDIR} > /dev/null
 RV="0"
 cp ${BUILDDIR}/../tests/song_en.mp3 ${TMPDIR}/song_en.mp3
 ${BUILDDIR}/idntag -c song_en.mp3
-mp3info -a "Broke For Free" -t "Night Owl" song_en.mp3
+mp3info -a "Broke For Free" -t "Night Owl" -l "Test Album" -y "2012" song_en.mp3
 
 # Rename based on tag
 ${BUILDDIR}/idntag -r song_en.mp3
@@ -25,6 +26,25 @@ FILELIST=$(ls -1)
 EXPECTED="Broke_For_Free-Night_Owl.mp3"
 if [[ "${FILELIST}" != "${EXPECTED}" ]]; then
   echo "\"${FILELIST}\" != \"${EXPECTED}\""
+  RV="1"
+fi
+
+# Test id3v2 tag
+for FIELD_EXPECTED in "artist:Broke For Free" "title:Night Owl" "album:Test Album" "year:2012"; do
+  FIELD="${FIELD_EXPECTED%%:*}"
+  EXPECTED="${FIELD_EXPECTED#*:}"
+  VALUE=$(${BUILDDIR}/tagdump id3v2 ${FIELD} *.mp3)
+  if [[ "${VALUE}" != "${EXPECTED}" ]]; then
+    echo "id3v2 ${FIELD} \"${VALUE}\" != \"${EXPECTED}\""
+    RV="1"
+  fi
+done
+
+# Test id3v1 tag removed
+ARTIST=$(${BUILDDIR}/tagdump id3v1 artist *.mp3)
+EXPECTED=""
+if [[ "${ARTIST}" != "${EXPECTED}" ]]; then
+  echo "id3v1 artist \"${ARTIST}\" != \"${EXPECTED}\""
   RV="1"
 fi
 

@@ -107,6 +107,12 @@ add_custom_target(uninstall
 # Test init
 enable_testing()
 
+# Test helper tagdump
+add_executable(tagdump tests/tagdump.cpp)
+target_include_directories(tagdump PRIVATE ${TAGLIB_INCLUDE_DIRS})
+target_link_directories(tagdump PRIVATE ${TAGLIB_LIBRARY_DIRS})
+target_link_libraries(tagdump PRIVATE ${TAGLIB_LIBRARIES})
+
 # Test macro add_unit_test
 macro (add_unit_test testname)
   configure_file(tests/${testname} ${CMAKE_CURRENT_BINARY_DIR}/${testname} COPYONLY)

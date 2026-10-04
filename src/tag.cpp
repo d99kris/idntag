@@ -162,11 +162,18 @@ bool Tag::Write(const std::string& p_FilePath, const std::string& p_Artist,
     return false;
   }
 
+  // Only the ID3v2 tag is saved, so first copy other fields (album, year, etc)
+  // missing in it from the ID3v1 / APE tags that will be stripped
+  TagLib::Tag::duplicate(file.tag(), tag, false /*overwrite*/);
+
   Log::Debug("Tag::Write setting artist='%s' title='%s'", p_Artist.c_str(), p_Title.c_str());
   tag->setArtist(TagLib::String(p_Artist, TagLib::String::UTF8));
   tag->setTitle(TagLib::String(p_Title, TagLib::String::UTF8));
 
-  if (!file.save())
+  // Save ID3v2 tag only, and strip ID3v1 / APE tags, as these would otherwise
+  // keep stale data (TagLib default save only fills their empty fields)
+  if (!file.save(TagLib::MPEG::File::ID3v2, TagLib::File::StripOthers,
+                 TagLib::ID3v2::v4, TagLib::File::DoNotDuplicate))
   {
     Log::Debug("Tag::Write save() returned false: %s (readOnly=%d)",
                p_FilePath.c_str(), file.readOnly());

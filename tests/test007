@@ -29,7 +29,7 @@ if [[ "${?}" != "0" ]]; then
 fi
 
 # Test artist tag
-ARTIST=$(mp3info -p %a *.mp3)
+ARTIST=$(${BUILDDIR}/tagdump id3v2 artist *.mp3)
 EXPECTED=""
 if [[ "${ARTIST}" != "${EXPECTED}" ]]; then
   echo "\"${ARTIST}\" != \"${EXPECTED}\""
@@ -37,7 +37,7 @@ if [[ "${ARTIST}" != "${EXPECTED}" ]]; then
 fi
 
 # Test title tag
-TITLE=$(mp3info -p %t *.mp3)
+TITLE=$(${BUILDDIR}/tagdump id3v2 title *.mp3)
 EXPECTED=""
 if [[ "${TITLE}" != "${EXPECTED}" ]]; then
   echo "\"${TITLE}\" != \"${EXPECTED}\""
