@@ -302,7 +302,7 @@ std::string Tag::SanitizeFileName(const std::string& p_FileName)
   for (char32_t c : u32)
   {
     // Strip control chars and path separators
-    if ((c >= 0 && c < 0x20) || c == U'/' || c == U'\\' || c == 0x7F)
+    if (c < 0x20 || c == U'/' || c == U'\\' || c == 0x7F)
     {
       continue;
     }
